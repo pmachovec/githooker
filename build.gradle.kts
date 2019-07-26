@@ -6,9 +6,15 @@ plugins {
 group = "com.pmachovec"
 version = "0.1"
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     implementation(gradleApi())
-    implementation(kotlin("stdlib-jdk12"))
+    implementation(kotlin("stdlib"))
+
+    implementation("org.apache.commons", "commons-exec", "1.3")
 
     runtime(files(sourceSets["main"].output.resourcesDir))
 }
