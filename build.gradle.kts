@@ -1,6 +1,7 @@
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 plugins {
     idea
-    id("com.adarshr.test-logger") version "1.7.0"
     kotlin("jvm") version "1.3.41"
 }
 
@@ -15,16 +16,28 @@ dependencies {
     implementation(gradleApi())
     implementation(kotlin("stdlib"))
     implementation("org.apache.commons", "commons-exec", "1.3")
+
+    testImplementation("org.powermock", "powermock-api-mockito2", "2.0.2")
+    testImplementation("org.powermock", "powermock-module-testng", "2.0.2")
+    testImplementation("org.testng", "testng", "7.0.0")
     runtime(files(sourceSets["main"].output.resourcesDir))
-    testImplementation("org.junit.jupiter", "junit-jupiter-api", "5.5.1")
-    testImplementation("org.junit.jupiter", "junit-jupiter-engine", "5.5.1")
-    testImplementation("org.junit.platform", "junit-platform-suite-api", "1.5.1")
-    testImplementation("org.junit.platform", "junit-platform-runner", "1.5.1")
 }
 
 idea {
     module {
         outputDir = File("build/classes/kotlin/main")
         testOutputDir = File("build/classes/kotlin/test")
+    }
+}
+
+tasks.withType<Test> {
+    testLogging {
+        displayGranularity = 4 // Prints only method names with package path
+        events(TestLogEvent.PASSED, TestLogEvent.FAILED, TestLogEvent.SKIPPED)
+    }
+
+    useTestNG {
+        suites("src/test/resources/testng.xml")
+        useDefaultListeners = true // Generates TestNG reports instead of Gradle reports
     }
 }

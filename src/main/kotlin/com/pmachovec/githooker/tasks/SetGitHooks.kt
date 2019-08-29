@@ -7,13 +7,15 @@ import com.pmachovec.githooker.extensions.GitHookerExtension
 import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 
-import org.apache.commons.exec.*
-import org.gradle.api.*
+import org.apache.commons.exec.CommandLine
+import org.apache.commons.exec.DefaultExecutor
+import org.apache.commons.exec.ExecuteException
+import org.apache.commons.exec.PumpStreamHandler
+import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
 open class SetGitHooks @Inject constructor(gitHookerExtensionExtension: GitHookerExtension): DefaultTask() {
     private val gitHookerExtension: GitHookerExtension = gitHookerExtensionExtension
-    private val gitConfigCommand = "git config core.hooksPath"
     private val exec = DefaultExecutor()
 
     companion object {
@@ -22,15 +24,15 @@ open class SetGitHooks @Inject constructor(gitHookerExtensionExtension: GitHooke
 
     @TaskAction
     fun setGitHooks() {
-        val gitHooksConfig = getGitHooksConfig()
+        val gitHooksConfigPath = getGitHooksConfigPath()
 
-        if (gitHooksConfig.isEmpty() || gitHooksConfig != gitHookerExtension.hooksPath) {
+        if (gitHooksConfigPath.isEmpty() || gitHooksConfigPath != gitHookerExtension.hooksPath) {
             runSetGitHooksCommand(gitHookerExtension.hooksPath?: DefaultValues.HOOKS_PATH)
         }
     }
 
-    private fun getGitHooksConfig(): String {
-        val cmdLine = CommandLine.parse(gitConfigCommand)
+    private fun getGitHooksConfigPath(): String {
+        val cmdLine = CommandLine.parse(DefaultValues.GIT_CONFIG_COMMAND)
         val outputStream = ByteArrayOutputStream()
         val streamHandler = PumpStreamHandler(outputStream)
         exec.streamHandler = streamHandler
@@ -46,7 +48,7 @@ open class SetGitHooks @Inject constructor(gitHookerExtensionExtension: GitHooke
 
     private fun runSetGitHooksCommand(hooksPath: String) {
         println(SetGitHooksTexts.SETTING_PATH)
-        val cmdLine = CommandLine.parse("$gitConfigCommand $hooksPath")
+        val cmdLine = CommandLine.parse("${DefaultValues.GIT_CONFIG_COMMAND} $hooksPath")
         exec.execute(cmdLine)
         println(SetGitHooksTexts.PATH_SET)
     }
