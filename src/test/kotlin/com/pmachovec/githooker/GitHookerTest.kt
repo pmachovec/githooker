@@ -5,6 +5,7 @@ import com.pmachovec.githooker.tasks.SetGitHooks
 
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
+import org.powermock.core.classloader.annotations.PowerMockIgnore
 import org.powermock.modules.testng.PowerMockTestCase
 import org.testng.Assert.assertNotNull
 import org.testng.Assert.assertNull

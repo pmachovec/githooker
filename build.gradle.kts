@@ -20,6 +20,7 @@ dependencies {
     testImplementation("org.powermock", "powermock-api-mockito2", "2.0.2")
     testImplementation("org.powermock", "powermock-module-testng", "2.0.2")
     testImplementation("org.testng", "testng", "7.0.0")
+
     runtime(files(sourceSets["main"].output.resourcesDir))
 }
 
