@@ -1,17 +1,17 @@
 package com.pmachovec.githooker
 
+import com.pmachovec.githooker.constants.tasks.SetGitHooksTask
 import com.pmachovec.githooker.extensions.GitHookerExtension
-import com.pmachovec.githooker.tasks.SetGitHooks
 
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
-import org.powermock.core.classloader.annotations.PowerMockIgnore
 import org.powermock.modules.testng.PowerMockTestCase
+import org.testng.annotations.BeforeClass
+import org.testng.annotations.Test
+import org.testng.Assert.assertEquals
 import org.testng.Assert.assertNotNull
 import org.testng.Assert.assertNull
 import org.testng.Assert.assertTrue
-import org.testng.annotations.BeforeClass
-import org.testng.annotations.Test
 
 class GitHookerTest: PowerMockTestCase() {
     private lateinit var project: Project
@@ -44,7 +44,14 @@ class GitHookerTest: PowerMockTestCase() {
 
     @Test(dependsOnMethods = ["applyPluginNotNullTest"])
     fun applyPluginTaskAvailableTest() {
-        val setGitHooks = project.tasks.getByName(SetGitHooks.NAME)
+        val setGitHooks = project.tasks.getByName(SetGitHooksTask.NAME)
         assertNotNull(setGitHooks)
+    }
+
+    @Test(dependsOnMethods = ["applyPluginTaskAvailableTest"])
+    fun applyPluginTaskPropertiesTest() {
+        val setGitHooks = project.tasks.getByName(SetGitHooksTask.NAME)
+        assertEquals(setGitHooks.group, SetGitHooksTask.GROUP)
+        assertEquals(setGitHooks.description, SetGitHooksTask.DESCRIPTION)
     }
 }

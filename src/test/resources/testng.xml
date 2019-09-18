@@ -4,7 +4,7 @@
    <test name="githooker-test">
       <classes>
          <class name="com.pmachovec.githooker.GitHookerTest" />
-         <class name="com.pmachovec.githooker.tasks.SetGitHooksTest" />
+         <class name="com.pmachovec.githooker.actions.SetGitHooksActionTest" />
       </classes>
    </test>
 </suite>

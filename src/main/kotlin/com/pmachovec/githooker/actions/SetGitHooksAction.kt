@@ -1,33 +1,30 @@
-package com.pmachovec.githooker.tasks
+package com.pmachovec.githooker.actions
 
 import com.pmachovec.githooker.constants.DefaultValues
-import com.pmachovec.githooker.constants.SetGitHooksTexts
+import com.pmachovec.githooker.constants.Texts
 import com.pmachovec.githooker.extensions.GitHookerExtension
-
-import java.io.ByteArrayOutputStream
-import javax.inject.Inject
-
 import org.apache.commons.exec.CommandLine
 import org.apache.commons.exec.DefaultExecutor
 import org.apache.commons.exec.ExecuteException
 import org.apache.commons.exec.PumpStreamHandler
-import org.gradle.api.DefaultTask
-import org.gradle.api.tasks.TaskAction
+import org.gradle.api.Action
+import org.gradle.api.Task
+import java.io.ByteArrayOutputStream
+import javax.inject.Inject
 
-open class SetGitHooks @Inject constructor(gitHookerExtensionExtension: GitHookerExtension): DefaultTask() {
+class SetGitHooksAction @Inject constructor(gitHookerExtensionExtension: GitHookerExtension): Action<Task> {
     private val gitHookerExtension: GitHookerExtension = gitHookerExtensionExtension
     private val exec = DefaultExecutor()
 
-    companion object {
-        const val NAME = "setGitHooks"
-    }
+    override fun execute(task: Task) {
+        if (gitHookerExtension.hooksPath.isNullOrEmpty()) {
+            println(Texts.PATH_NOT_CONFIGURED)
+        } else {
+            val gitHooksConfigPath = getGitHooksConfigPath()
 
-    @TaskAction
-    fun setGitHooks() {
-        val gitHooksConfigPath = getGitHooksConfigPath()
-
-        if (gitHooksConfigPath.isEmpty() || gitHooksConfigPath != gitHookerExtension.hooksPath) {
-            runSetGitHooksCommand(gitHookerExtension.hooksPath?: DefaultValues.HOOKS_PATH)
+            if (gitHooksConfigPath.isEmpty() || gitHooksConfigPath != gitHookerExtension.hooksPath) {
+                runSetGitHooksCommand(gitHookerExtension.hooksPath!!)
+            }
         }
     }
 
@@ -40,16 +37,16 @@ open class SetGitHooks @Inject constructor(gitHookerExtensionExtension: GitHooke
         try {
             exec.execute(cmdLine)
         } catch (err: ExecuteException) {
-            println(SetGitHooksTexts.PATH_NOT_SET)
+            println(Texts.PATH_NOT_SET)
         }
 
         return outputStream.toString().trim()
     }
 
     private fun runSetGitHooksCommand(hooksPath: String) {
-        println(SetGitHooksTexts.SETTING_PATH)
+        println(Texts.SETTING_PATH)
         val cmdLine = CommandLine.parse("${DefaultValues.GIT_CONFIG_COMMAND} $hooksPath")
         exec.execute(cmdLine)
-        println(SetGitHooksTexts.PATH_SET)
+        println(Texts.PATH_SET)
     }
 }

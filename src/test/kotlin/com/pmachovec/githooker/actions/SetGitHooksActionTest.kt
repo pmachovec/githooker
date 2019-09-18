@@ -1,10 +1,13 @@
-package com.pmachovec.githooker.tasks
+package com.pmachovec.githooker.actions
 
 import com.pmachovec.githooker.GitHooker
 import com.pmachovec.githooker.constants.DefaultValues
+import com.pmachovec.githooker.constants.Texts
+import com.pmachovec.githooker.constants.tasks.SetGitHooksTask
 import com.pmachovec.githooker.extensions.GitHookerExtension
 
 import java.io.ByteArrayOutputStream
+import java.io.PrintStream
 
 import org.apache.commons.exec.CommandLine
 import org.apache.commons.exec.ExecuteException
@@ -27,19 +30,21 @@ import org.testng.annotations.BeforeClass
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 import org.testng.Assert.assertEquals
+import org.testng.Assert.assertNotEquals
 import org.testng.Assert.assertNotNull
 
 @PrepareForTest(CommandLine::class,
-                SetGitHooks::class) // A class, in which mocked constructors are called, must be prepared for test.
-class SetGitHooksTest: PowerMockTestCase() {
+                SetGitHooksAction::class) // A class, in which mocked constructors are called, must be prepared for test.
+class SetGitHooksActionTest: PowerMockTestCase() {
     private lateinit var byteArrayOutputStreamMock: ByteArrayOutputStream
     private lateinit var cmdLineInitialMock: CommandLine
-    private lateinit var cmdLineDefaultExecutedMock: CommandLine
-    private lateinit var cmdLineConfigExecutedMock: CommandLine
+    private lateinit var cmdLineGitConfigCommandMock: CommandLine
     private lateinit var defaultExecutorMock: DefaultExecutor
     private lateinit var pumpStreamHandlerMock: PumpStreamHandler
     private lateinit var project: Project
-    private lateinit var setGitHooks: Task
+    private lateinit var setGitHooksTask: Task
+    private var testConsole = ByteArrayOutputStream()
+    private var standardOutput = System.out
     private var executeExceptionMessageMock = "executeExceptionMessageMock"
     private var gitConfigPathMock = "gitConfigPathMock"
     private var pluginConfigPathMock = "pluginConfigPathMock"
@@ -48,8 +53,7 @@ class SetGitHooksTest: PowerMockTestCase() {
     fun setupClass() {
         byteArrayOutputStreamMock = mock(ByteArrayOutputStream::class.java)
         cmdLineInitialMock = mock(CommandLine::class.java)
-        cmdLineDefaultExecutedMock = mock(CommandLine::class.java)
-        cmdLineConfigExecutedMock = mock(CommandLine::class.java)
+        cmdLineGitConfigCommandMock = mock(CommandLine::class.java)
         defaultExecutorMock = mock(DefaultExecutor::class.java)
         pumpStreamHandlerMock = mock(PumpStreamHandler::class.java)
     }
@@ -62,8 +66,7 @@ class SetGitHooksTest: PowerMockTestCase() {
          */
         mockStatic(CommandLine::class.java)
         `when`(CommandLine.parse(anyString())).thenReturn(cmdLineInitialMock)
-        `when`(CommandLine.parse("${DefaultValues.GIT_CONFIG_COMMAND} ${DefaultValues.HOOKS_PATH}")).thenReturn(cmdLineDefaultExecutedMock)
-        `when`(CommandLine.parse("${DefaultValues.GIT_CONFIG_COMMAND} $pluginConfigPathMock")).thenReturn(cmdLineConfigExecutedMock)
+        `when`(CommandLine.parse("${DefaultValues.GIT_CONFIG_COMMAND} $pluginConfigPathMock")).thenReturn(cmdLineGitConfigCommandMock)
 
         whenNew(ByteArrayOutputStream::class.java).withAnyArguments().thenReturn(byteArrayOutputStreamMock)
         whenNew(DefaultExecutor::class.java).withNoArguments().thenReturn(defaultExecutorMock)
@@ -72,74 +75,74 @@ class SetGitHooksTest: PowerMockTestCase() {
         // Plugin must be applied only after static and constructor mocks are created, otherwise, original classes would be used
         project = ProjectBuilder.builder().build()
         project.pluginManager.apply(GitHooker::class.java)
-        setGitHooks = project.tasks.getByName(SetGitHooks.NAME)
+        setGitHooksTask = project.tasks.getByName(SetGitHooksTask.NAME)
+        System.setOut(PrintStream(testConsole))
     }
 
     @AfterMethod
     fun teardownMethod() {
         Mockito.reset(defaultExecutorMock)
+        System.setOut(standardOutput)
     }
 
     @Test
     fun setGitHooksActionAvailableTest() {
-        val setGitHooksActions = setGitHooks.actions;
+        val setGitHooksActions = setGitHooksTask.actions
         assertNotNull(setGitHooksActions)
-        assertEquals(setGitHooksActions.size, 1);
+        assertEquals(setGitHooksActions.size, 1)
     }
 
     @Test(dependsOnMethods = ["setGitHooksActionAvailableTest"],
-          description = "Git hooks path not configured, plugin hooks path not configured by the extension, plugin default path expected")
-    fun setGitHooksNothingConfiguredTest() {
+          description = "Git hooks path not configured, plugin hooks path not configured, command execution not expected")
+    fun executeNothingConfiguredTest() {
         doThrow(ExecuteException(executeExceptionMessageMock, 1)).`when`(defaultExecutorMock).execute(cmdLineInitialMock)
         `when`(byteArrayOutputStreamMock.toString()).thenReturn("")
-        val setGitHooksActions = setGitHooks.actions;
-        val setGitHooksAction = setGitHooksActions[0];
-        setGitHooksAction.execute(setGitHooks);
+        val setGitHooksAction = setGitHooksTask.actions[0]
+        setGitHooksAction.execute(setGitHooksTask)
 
-        Mockito.verify(defaultExecutorMock, Mockito.times(1)).execute(cmdLineDefaultExecutedMock);
+        assertNotEquals(testConsole.toString().indexOf(Texts.PATH_NOT_CONFIGURED), -1)
     }
 
     @Test(dependsOnMethods = ["setGitHooksActionAvailableTest"],
-          description = "Git hooks path configured, plugin hooks path not configured by the extension, plugin default path expected")
-    fun setGitHooksGitConfiguredTest() {
+          description = "Git hooks path configured, plugin hooks path not configured, command execution not expected")
+    fun executeGitConfiguredTest() {
         /*
          * When the plugin is applied and no path is configured, it uses the plugin-default path,
          * even when there is a different path configured for Git itself.
          */
         `when`(defaultExecutorMock.execute(cmdLineInitialMock)).thenReturn(0)
         `when`(byteArrayOutputStreamMock.toString()).thenReturn(gitConfigPathMock)
-        val setGitHooksActions = setGitHooks.actions;
-        val setGitHooksAction = setGitHooksActions[0];
-        setGitHooksAction.execute(setGitHooks);
+        val setGitHooksAction = setGitHooksTask.actions[0]
+        setGitHooksAction.execute(setGitHooksTask)
 
-        Mockito.verify(defaultExecutorMock, Mockito.times(1)).execute(cmdLineDefaultExecutedMock);
+        assertNotEquals(testConsole.toString().indexOf(Texts.PATH_NOT_CONFIGURED), -1)
     }
 
     @Test(dependsOnMethods = ["setGitHooksActionAvailableTest"],
-          description = "Git hooks path not configured, plugin hooks path configured by the extension, plugin configured path expected")
-    fun setGitHooksPluginConfiguredTest() {
+          description = "Git hooks path not configured, plugin hooks path configured, command execution expected")
+    fun executePluginConfiguredTest() {
         doThrow(ExecuteException(executeExceptionMessageMock, 1)).`when`(defaultExecutorMock).execute(cmdLineInitialMock)
         `when`(byteArrayOutputStreamMock.toString()).thenReturn("")
-        val setGitHooksActions = setGitHooks.actions;
-        val setGitHooksAction = setGitHooksActions[0];
+        val setGitHooksActions = setGitHooksTask.actions
+        val setGitHooksAction = setGitHooksActions[0]
         val gitHookerExtension = project.extensions.getByName(GitHookerExtension.NAME) as GitHookerExtension
         gitHookerExtension.hooksPath = pluginConfigPathMock
-        setGitHooksAction.execute(setGitHooks);
+        setGitHooksAction.execute(setGitHooksTask)
 
-        Mockito.verify(defaultExecutorMock, Mockito.times(1)).execute(cmdLineConfigExecutedMock);
+        Mockito.verify(defaultExecutorMock, Mockito.times(1)).execute(cmdLineGitConfigCommandMock)
     }
 
     @Test(dependsOnMethods = ["setGitHooksActionAvailableTest"],
-          description = "Git hooks path configured, plugin hooks path configured by the extension, plugin configured path expected")
-    fun setGitHooksAllConfiguredTest() {
+          description = "Git hooks path configured, plugin hooks path configured, command execution expected")
+    fun executeAllConfiguredTest() {
         `when`(defaultExecutorMock.execute(cmdLineInitialMock)).thenReturn(0)
         `when`(byteArrayOutputStreamMock.toString()).thenReturn(gitConfigPathMock)
-        val setGitHooksActions = setGitHooks.actions;
-        val setGitHooksAction = setGitHooksActions[0];
+        val setGitHooksActions = setGitHooksTask.actions
+        val setGitHooksAction = setGitHooksActions[0]
         val gitHookerExtension = project.extensions.getByName(GitHookerExtension.NAME) as GitHookerExtension
         gitHookerExtension.hooksPath = pluginConfigPathMock
-        setGitHooksAction.execute(setGitHooks);
+        setGitHooksAction.execute(setGitHooksTask)
 
-        Mockito.verify(defaultExecutorMock, Mockito.times(1)).execute(cmdLineConfigExecutedMock);
+        Mockito.verify(defaultExecutorMock, Mockito.times(1)).execute(cmdLineGitConfigCommandMock)
     }
 }
