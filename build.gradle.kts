@@ -26,9 +26,13 @@ dependencies {
 
 idea {
     module {
-        outputDir = File("build/classes/kotlin/main")
-        testOutputDir = File("build/classes/kotlin/test")
+        outputDir = File("$buildDir/classes/kotlin/main")
+        testOutputDir = File("$buildDir/classes/kotlin/test")
     }
+}
+
+tasks.compileTestKotlin {
+    kotlinOptions.suppressWarnings = true
 }
 
 tasks.withType<Test> {

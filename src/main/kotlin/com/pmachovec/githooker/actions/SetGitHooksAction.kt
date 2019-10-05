@@ -2,28 +2,28 @@ package com.pmachovec.githooker.actions
 
 import com.pmachovec.githooker.constants.DefaultValues
 import com.pmachovec.githooker.constants.Texts
-import com.pmachovec.githooker.extensions.GitHookerExtension
+
+import java.io.ByteArrayOutputStream
+import javax.inject.Inject
+
 import org.apache.commons.exec.CommandLine
 import org.apache.commons.exec.DefaultExecutor
 import org.apache.commons.exec.ExecuteException
 import org.apache.commons.exec.PumpStreamHandler
 import org.gradle.api.Action
 import org.gradle.api.Task
-import java.io.ByteArrayOutputStream
-import javax.inject.Inject
 
-class SetGitHooksAction @Inject constructor(gitHookerExtensionExtension: GitHookerExtension): Action<Task> {
-    private val gitHookerExtension: GitHookerExtension = gitHookerExtensionExtension
+class SetGitHooksAction @Inject constructor(private val hooksPath: String?): Action<Task> {
     private val exec = DefaultExecutor()
 
     override fun execute(task: Task) {
-        if (gitHookerExtension.hooksPath.isNullOrEmpty()) {
+        if (hooksPath.isNullOrEmpty()) {
             println(Texts.PATH_NOT_CONFIGURED)
         } else {
             val gitHooksConfigPath = getGitHooksConfigPath()
 
-            if (gitHooksConfigPath.isEmpty() || gitHooksConfigPath != gitHookerExtension.hooksPath) {
-                runSetGitHooksCommand(gitHookerExtension.hooksPath!!)
+            if (gitHooksConfigPath.isEmpty() || gitHooksConfigPath != hooksPath) {
+                runSetGitHooksCommand(hooksPath)
             }
         }
     }

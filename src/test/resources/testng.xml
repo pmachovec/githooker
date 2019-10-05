@@ -3,7 +3,8 @@
 <suite name="githooker-test-suite">
    <test name="githooker-test">
       <classes>
-         <class name="com.pmachovec.githooker.GitHookerTest" />
+         <class name="com.pmachovec.githooker.GitHookerProjectStructureTest" />
+         <class name="com.pmachovec.githooker.GitHookerTriggerTaskTest" />
          <class name="com.pmachovec.githooker.actions.SetGitHooksActionTest" />
       </classes>
    </test>
