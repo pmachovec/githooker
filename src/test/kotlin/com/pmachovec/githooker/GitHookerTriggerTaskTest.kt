@@ -36,9 +36,11 @@ import org.testng.Assert.assertNotNull
 import org.testng.Assert.assertNull
 import org.testng.Assert.assertTrue
 
-@PrepareForTest(ProjectBuilder::class,
-                SetGitHooksAction::class)
-class GitHookerTriggerTaskTest: PowerMockTestCase() {
+@PrepareForTest(
+    ProjectBuilder::class,
+    SetGitHooksAction::class
+)
+class GitHookerTriggerTaskTest : PowerMockTestCase() {
     private lateinit var projectBuilderMock: ProjectBuilder
     private lateinit var projectMock: Project
     private lateinit var extensionContainerMock: ExtensionContainer
@@ -57,7 +59,7 @@ class GitHookerTriggerTaskTest: PowerMockTestCase() {
     private val testConsole = ByteArrayOutputStream()
     private val standardOutput = System.out
 
-    private inline fun <reified T: Any> genericMock() = mock(T::class.java)
+    private inline fun <reified T : Any> genericMock() = mock(T::class.java)
 
     @BeforeClass
     fun setupClass() {
@@ -133,8 +135,10 @@ class GitHookerTriggerTaskTest: PowerMockTestCase() {
         Mockito.verify(setGitHooksTaskMock, Mockito.times(0)).dependsOn(any())
     }
 
-    @Test(dataProvider = "nonExistingTaskNameProvider",
-          description = "Trigger task set, but doesn't exist, dependency setting not expected")
+    @Test(
+        dataProvider = "nonExistingTaskNameProvider",
+        description = "Trigger task set, but doesn't exist, dependency setting not expected"
+    )
     fun applyTriggerTaskSetNonExistingTest(triggerTaskName: String) {
         val expectedOutput = Texts.TRIGGER_TASK_NOT_FOUND.format(nonExistingTaskNameMock)
 
@@ -142,8 +146,10 @@ class GitHookerTriggerTaskTest: PowerMockTestCase() {
         Mockito.verify(setGitHooksTaskMock, Mockito.times(0)).dependsOn(any())
     }
 
-    @Test(dataProvider = "triggerTaskNameProvider",
-          description = "Trigger task set, dependency setting expected")
+    @Test(
+        dataProvider = "triggerTaskNameProvider",
+        description = "Trigger task set, dependency setting expected"
+    )
     fun applyTriggerTaskSetTest(triggerTaskName: String) {
         Mockito.verify(setGitHooksTaskMock, Mockito.times(1)).dependsOn(triggerTaskMock)
     }

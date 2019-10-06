@@ -41,7 +41,7 @@ import org.testng.Assert.assertNotNull
 @PrepareForTest(CommandLine::class,
                 ProjectBuilder::class,
                 SetGitHooksAction::class) // A class, in which mocked constructors are called, must be prepared for test.
-class SetGitHooksActionTest: PowerMockTestCase() {
+class SetGitHooksActionTest : PowerMockTestCase() {
     private lateinit var projectBuilderMock: ProjectBuilder
     private lateinit var projectMock: Project
     private lateinit var pluginManagerMock: PluginManager
@@ -137,8 +137,10 @@ class SetGitHooksActionTest: PowerMockTestCase() {
         assertEquals(setGitHooksActions.size, 1)
     }
 
-    @Test(dependsOnMethods = ["actionAvailableTest"],
-          description = "Git hooks path not configured, plugin hooks path not configured, command execution not expected")
+    @Test(
+        dependsOnMethods = ["actionAvailableTest"],
+        description = "Git hooks path not configured, plugin hooks path not configured, command execution not expected"
+    )
     fun executeNothingConfiguredTest() {
         doThrow(ExecuteException(executeExceptionMessageMock, 1)).`when`(defaultExecutorMock).execute(cmdLineInitialMock)
         `when`(byteArrayOutputStreamMock.toString()).thenReturn("")
@@ -147,8 +149,10 @@ class SetGitHooksActionTest: PowerMockTestCase() {
         assertNotEquals(testConsole.toString().indexOf(Texts.PATH_NOT_CONFIGURED), -1)
     }
 
-    @Test(dependsOnMethods = ["actionAvailableTest"],
-          description = "Git hooks path configured, plugin hooks path not configured, command execution not expected")
+    @Test(
+        dependsOnMethods = ["actionAvailableTest"],
+        description = "Git hooks path configured, plugin hooks path not configured, command execution not expected"
+    )
     fun executeGitConfiguredTest() {
         `when`(defaultExecutorMock.execute(cmdLineInitialMock)).thenReturn(0)
         `when`(byteArrayOutputStreamMock.toString()).thenReturn(gitConfigPathMock)
@@ -157,9 +161,11 @@ class SetGitHooksActionTest: PowerMockTestCase() {
         assertNotEquals(testConsole.toString().indexOf(Texts.PATH_NOT_CONFIGURED), -1)
     }
 
-    @Test(dataProvider = "pluginConfigPathMockProvider",
-          dependsOnMethods = ["actionAvailableTest"],
-          description = "Git hooks path not configured, plugin hooks path configured, command execution expected")
+    @Test(
+        dataProvider = "pluginConfigPathMockProvider",
+        dependsOnMethods = ["actionAvailableTest"],
+        description = "Git hooks path not configured, plugin hooks path configured, command execution expected"
+    )
     fun executePluginConfiguredTest(pluginConfigPath: String) {
         doThrow(ExecuteException(executeExceptionMessageMock, 1)).`when`(defaultExecutorMock).execute(cmdLineInitialMock)
         `when`(byteArrayOutputStreamMock.toString()).thenReturn("")
@@ -168,9 +174,11 @@ class SetGitHooksActionTest: PowerMockTestCase() {
         Mockito.verify(defaultExecutorMock, Mockito.times(1)).execute(cmdLineGitConfigCommandMock)
     }
 
-    @Test(dataProvider = "pluginConfigPathMockProvider",
-          dependsOnMethods = ["actionAvailableTest"],
-          description = "Git hooks path configured, plugin hooks path configured, command execution expected")
+    @Test(
+        dataProvider = "pluginConfigPathMockProvider",
+        dependsOnMethods = ["actionAvailableTest"],
+        description = "Git hooks path configured, plugin hooks path configured, command execution expected"
+    )
     fun executeAllConfiguredTest(pluginConfigPath: String) {
         `when`(defaultExecutorMock.execute(cmdLineInitialMock)).thenReturn(0)
         `when`(byteArrayOutputStreamMock.toString()).thenReturn(gitConfigPathMock)

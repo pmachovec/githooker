@@ -9,7 +9,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.UnknownTaskException
 
-class GitHooker: Plugin<Project> {
+class GitHooker : Plugin<Project> {
     companion object {
         const val NAME = "githooker"
     }
@@ -25,7 +25,7 @@ class GitHooker: Plugin<Project> {
             try {
                 val triggerTask = project.tasks.getByName(gitHookerExtension.triggerTaskName!!)
                 setGitHooksTask.dependsOn(triggerTask)
-            } catch(ute: UnknownTaskException) {
+            } catch (ute: UnknownTaskException) {
                 println(Texts.TRIGGER_TASK_NOT_FOUND.format(gitHookerExtension.triggerTaskName))
             }
         }

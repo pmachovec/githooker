@@ -13,7 +13,7 @@ import org.testng.Assert.assertNotNull
 import org.testng.Assert.assertNull
 import org.testng.Assert.assertTrue
 
-class GitHookerProjectStructureTest: PowerMockTestCase() {
+class GitHookerProjectStructureTest : PowerMockTestCase() {
     private lateinit var project: Project
 
     @BeforeMethod
@@ -27,16 +27,20 @@ class GitHookerProjectStructureTest: PowerMockTestCase() {
         assertNotNull(project.plugins.findPlugin(GitHooker.NAME))
     }
 
-    @Test(dependsOnMethods = ["applyPluginNotNullTest"],
-          description = "Configuration extension available expected")
+    @Test(
+        dependsOnMethods = ["applyPluginNotNullTest"],
+        description = "Configuration extension available expected"
+    )
     fun applyExtensionAvailableTest() {
         val gitHookerExtension = project.extensions.findByName(GitHookerExtension.NAME)
         assertNotNull(gitHookerExtension)
         assertTrue(gitHookerExtension is GitHookerExtension)
     }
 
-    @Test(dependsOnMethods = ["applyExtensionAvailableTest"],
-          description = "Configuration extension properties not set expected")
+    @Test(
+        dependsOnMethods = ["applyExtensionAvailableTest"],
+        description = "Configuration extension properties not set expected"
+    )
     fun applyExtensionPropertiesNotSetTest() {
         val gitHookerExtension = project.extensions.findByName(GitHookerExtension.NAME)
         gitHookerExtension as GitHookerExtension
@@ -44,15 +48,19 @@ class GitHookerProjectStructureTest: PowerMockTestCase() {
         assertNull(gitHookerExtension.triggerTaskName)
     }
 
-    @Test(dependsOnMethods = ["applyPluginNotNullTest"],
-          description = "Task available expected")
+    @Test(
+        dependsOnMethods = ["applyPluginNotNullTest"],
+        description = "Task available expected"
+    )
     fun applyTaskAvailableTest() {
         val setGitHooksTask = project.tasks.getByName(SetGitHooksTask.NAME)
         assertNotNull(setGitHooksTask)
     }
 
-    @Test(dependsOnMethods = ["applyTaskAvailableTest"],
-          description = "Task properties correct expected")
+    @Test(
+        dependsOnMethods = ["applyTaskAvailableTest"],
+        description = "Task properties correct expected"
+    )
     fun applyTaskPropertiesTest() {
         val setGitHooksTask = project.tasks.getByName(SetGitHooksTask.NAME)
         assertEquals(setGitHooksTask.group, SetGitHooksTask.GROUP)

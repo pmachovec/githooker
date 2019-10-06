@@ -13,7 +13,7 @@ import org.apache.commons.exec.PumpStreamHandler
 import org.gradle.api.Action
 import org.gradle.api.Task
 
-class SetGitHooksAction @Inject constructor(private val hooksPath: String?): Action<Task> {
+class SetGitHooksAction @Inject constructor(private val hooksPath: String?) : Action<Task> {
     private val exec = DefaultExecutor()
 
     override fun execute(task: Task) {

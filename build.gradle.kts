@@ -2,6 +2,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
     idea
+    id("org.jlleitschuh.gradle.ktlint") version "9.0.0"
     kotlin("jvm") version "1.3.41"
 }
 
@@ -29,6 +30,11 @@ idea {
         outputDir = File("$buildDir/classes/kotlin/main")
         testOutputDir = File("$buildDir/classes/kotlin/test")
     }
+}
+
+ktlint {
+    disabledRules.add("import-ordering")
+    verbose.set(true)
 }
 
 tasks.compileTestKotlin {
