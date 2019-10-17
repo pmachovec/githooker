@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "com.pmachovec"
-version = "0.1.1"
+version = "1.0"
 
 // REPOSITORIES AND DEPENDENCIES
 repositories {
