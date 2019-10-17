@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "com.pmachovec"
-version = "0.1"
+version = "0.1.1"
 
 // REPOSITORIES AND DEPENDENCIES
 repositories {
@@ -18,7 +18,7 @@ repositories {
 }
 
 dependencies {
-    // implementation(gradleApi()) // Added automatically by java-gradle-plugin
+    // implementation(gradleApi()) // Added automatically by the java-gradle-plugin
     implementation(kotlin("stdlib"))
     implementation("org.apache.commons", "commons-exec", "1.3")
 

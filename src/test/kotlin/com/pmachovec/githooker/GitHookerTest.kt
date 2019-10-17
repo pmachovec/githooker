@@ -6,14 +6,14 @@ import com.pmachovec.githooker.extensions.GitHookerExtension
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.powermock.modules.testng.PowerMockTestCase
-import org.testng.annotations.BeforeMethod
-import org.testng.annotations.Test
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertNotNull
 import org.testng.Assert.assertNull
 import org.testng.Assert.assertTrue
+import org.testng.annotations.BeforeMethod
+import org.testng.annotations.Test
 
-class GitHookerProjectStructureTest : PowerMockTestCase() {
+class GitHookerTest : PowerMockTestCase() {
     private lateinit var project: Project
 
     @BeforeMethod
@@ -23,45 +23,44 @@ class GitHookerProjectStructureTest : PowerMockTestCase() {
     }
 
     @Test(description = "Plugin available expected")
-    fun applyPluginNotNullTest() {
+    fun pluginNotNullTest() {
         assertNotNull(project.plugins.findPlugin(GitHooker.NAME))
     }
 
     @Test(
-        dependsOnMethods = ["applyPluginNotNullTest"],
+        dependsOnMethods = ["pluginNotNullTest"],
         description = "Configuration extension available expected"
     )
-    fun applyExtensionAvailableTest() {
+    fun extensionAvailableTest() {
         val gitHookerExtension = project.extensions.findByName(GitHookerExtension.NAME)
         assertNotNull(gitHookerExtension)
         assertTrue(gitHookerExtension is GitHookerExtension)
     }
 
     @Test(
-        dependsOnMethods = ["applyExtensionAvailableTest"],
+        dependsOnMethods = ["extensionAvailableTest"],
         description = "Configuration extension properties not set expected"
     )
-    fun applyExtensionPropertiesNotSetTest() {
-        val gitHookerExtension = project.extensions.findByName(GitHookerExtension.NAME)
-        gitHookerExtension as GitHookerExtension
+    fun extensionPropertiesNotSetTest() {
+        val gitHookerExtension = project.extensions.getByName(GitHookerExtension.NAME) as GitHookerExtension
         assertNull(gitHookerExtension.hooksPath)
         assertNull(gitHookerExtension.triggerTaskName)
     }
 
     @Test(
-        dependsOnMethods = ["applyPluginNotNullTest"],
+        dependsOnMethods = ["pluginNotNullTest"],
         description = "Task available expected"
     )
-    fun applyTaskAvailableTest() {
-        val setGitHooksTask = project.tasks.getByName(SetGitHooksTask.NAME)
+    fun taskAvailableTest() {
+        val setGitHooksTask = project.tasks.findByName(SetGitHooksTask.NAME)
         assertNotNull(setGitHooksTask)
     }
 
     @Test(
-        dependsOnMethods = ["applyTaskAvailableTest"],
+        dependsOnMethods = ["taskAvailableTest"],
         description = "Task properties correct expected"
     )
-    fun applyTaskPropertiesTest() {
+    fun taskPropertiesTest() {
         val setGitHooksTask = project.tasks.getByName(SetGitHooksTask.NAME)
         assertEquals(setGitHooksTask.group, SetGitHooksTask.GROUP)
         assertEquals(setGitHooksTask.description, SetGitHooksTask.DESCRIPTION)

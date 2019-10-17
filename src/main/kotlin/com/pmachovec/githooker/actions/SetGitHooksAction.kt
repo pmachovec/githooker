@@ -2,6 +2,7 @@ package com.pmachovec.githooker.actions
 
 import com.pmachovec.githooker.constants.DefaultValues
 import com.pmachovec.githooker.constants.Texts
+import com.pmachovec.githooker.extensions.GitHookerExtension
 
 import java.io.ByteArrayOutputStream
 import javax.inject.Inject
@@ -13,10 +14,13 @@ import org.apache.commons.exec.PumpStreamHandler
 import org.gradle.api.Action
 import org.gradle.api.Task
 
-class SetGitHooksAction @Inject constructor(private val hooksPath: String?) : Action<Task> {
+class SetGitHooksAction @Inject constructor() : Action<Task> {
     private val exec = DefaultExecutor()
 
     override fun execute(task: Task) {
+        val gitHookerExtension = task.project.extensions.findByName(GitHookerExtension.NAME) as GitHookerExtension
+        val hooksPath = gitHookerExtension.hooksPath
+
         if (hooksPath.isNullOrEmpty()) {
             println(Texts.PATH_NOT_CONFIGURED)
         } else {
