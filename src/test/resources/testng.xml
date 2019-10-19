@@ -1,0 +1,11 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="githooker-test-suite">
+  <test name="githooker-test">
+    <classes>
+      <class name="com.pmachovec.githooker.GitHookerTest" />
+      <class name="com.pmachovec.githooker.actions.SetGitHooksActionTest" />
+      <class name="com.pmachovec.githooker.listeners.TriggerTaskListenerTest" />
+    </classes>
+  </test>
+</suite>
