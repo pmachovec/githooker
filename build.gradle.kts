@@ -5,12 +5,13 @@ plugins {
     idea
     `java-gradle-plugin`
     `maven-publish`
-    kotlin("jvm") version "1.3.50"
-    id("org.jlleitschuh.gradle.ktlint") version "9.0.0"
+    kotlin("jvm").version("1.3.50")
+    id("org.jlleitschuh.gradle.ktlint").version("9.0.0")
+    id("com.pmachovec.ultrabuilder").version("1.0")
 }
 
 group = "com.pmachovec"
-version = "1.0"
+version = "1.0.1"
 
 // REPOSITORIES AND DEPENDENCIES
 repositories {
@@ -26,7 +27,7 @@ dependencies {
     testImplementation("org.powermock", "powermock-module-testng", "2.0.2")
     testImplementation("org.testng", "testng", "7.0.0")
 
-    runtime(files(sourceSets["main"].output.resourcesDir))
+    runtimeOnly(files(sourceSets["main"].output.resourcesDir))
 }
 
 // PUBLICATION TO MAVEN REPOSITORY
