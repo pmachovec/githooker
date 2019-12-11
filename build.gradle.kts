@@ -5,8 +5,8 @@ plugins {
     idea
     `java-gradle-plugin`
     `maven-publish`
-    kotlin("jvm") version "1.3.50"
-    id("org.jlleitschuh.gradle.ktlint") version "9.0.0"
+    kotlin("jvm").version("1.3.50")
+    id("org.jlleitschuh.gradle.ktlint").version("9.0.0")
     id("com.pmachovec.ultrabuilder").version("1.0")
 }
 
