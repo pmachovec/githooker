@@ -5,13 +5,13 @@ plugins {
     idea
     `java-gradle-plugin`
     `maven-publish`
-    kotlin("jvm").version("1.3.50")
+    kotlin("jvm").version("1.3.60")
     id("org.jlleitschuh.gradle.ktlint").version("9.0.0")
-    id("com.pmachovec.ultrabuilder").version("1.0")
+    id("com.pmachovec.ultrabuilder").version("1.1")
 }
 
 group = "com.pmachovec"
-version = "1.0.1"
+version = "1.0.2"
 
 // REPOSITORIES AND DEPENDENCIES
 repositories {
@@ -43,16 +43,17 @@ gradlePlugin {
 publishing {
     repositories {
         maven {
-            try {
-                // 'repoUrl' variable to be set in gradle.properties
-                url = uri(rootProject.extra["repoUrl"]!!)
-            } catch (upe: ExtraPropertiesExtension.UnknownPropertyException) {
-                println("Repository for publishing not set")
+            project.properties["repoUrl"]?.let { url = uri(it) }
+
+            credentials {
+                project.properties["userName"]?.let { username = it.toString() }
+                project.properties["token"]?.let { password = it.toString() }
             }
         }
     }
 }
 
+// PROJECT CONFIGURATION
 idea {
     module {
         outputDir = File("$buildDir/classes/kotlin/main")
@@ -60,7 +61,6 @@ idea {
     }
 }
 
-// PROJECT CONFIGURATION
 ktlint {
     disabledRules.add("import-ordering")
     verbose.set(true)
@@ -99,4 +99,10 @@ tasks.withType<Test> {
         suites("src/test/resources/testng.xml")
         useDefaultListeners = true // Generates TestNG reports instead of Gradle reports
     }
+}
+
+val tasksToDisable = tasks.withType<PublishToMavenRepository>()
+
+tasksToDisable.forEach {
+    it.enabled = false
 }

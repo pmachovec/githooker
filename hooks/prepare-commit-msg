@@ -1,7 +1,5 @@
 #!/bin/sh
-if [ "$2" == "merge" ]; then
-  GIT_HEAD=$(env | grep GITHEAD)
-  SOURCE_BRANCH_NAME="${GIT_HEAD##*=}"
+if [ "$2" = "merge" ]; then
   TARGET_BRANCH_NAME=$(git symbolic-ref --short HEAD)
-  echo "Merge branch '$SOURCE_BRANCH_NAME' into '$TARGET_BRANCH_NAME'" > $1
+  sed -i "1 s/.*/& into '$TARGET_BRANCH_NAME'/" "$1"
 fi
