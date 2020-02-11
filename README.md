@@ -1,4 +1,4 @@
-# Githooker 1.0.2
+# Githooker 1.0.3
 Gradle plugin for enforcing git hooks stored in a non-default location. Triggers Git hooks path configuration after a specified Gradle task is finished. It's recommended to specify a task that is a part of the current project build.
 
 For example, when the path `custom/hooks` and the task `classes` is specified, then every time after the task is executed the Git hooks path configuration is checked for the current project. And if it's different from the specified path, or not set at all, the specified path is configured.
@@ -25,7 +25,7 @@ pluginManagement {
 ```
 plugins {
     ...
-    id("com.pmachovec.githooker").version("1.0.2")
+    id("com.pmachovec.githooker").version("1.0.3")
     ...
 }
 ```
@@ -40,6 +40,12 @@ githooker {
 ```
 
 ### Release track
+**1.0.3**
+* user name omitted for package repository publication configuration
+* no new functionality
+
+<br/>
+
 **1.0.2**
 * fixed version of Ultrabuilder plugin incorporated
 * ready for publishing to GitHub package repository
