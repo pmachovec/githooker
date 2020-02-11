@@ -7,11 +7,11 @@ plugins {
     `maven-publish`
     kotlin("jvm").version("1.3.60")
     id("org.jlleitschuh.gradle.ktlint").version("9.0.0")
-    id("com.pmachovec.ultrabuilder").version("1.1")
+    id("com.pmachovec.ultrabuilder").version("1.1.1")
 }
 
 group = "com.pmachovec"
-version = "1.0.2"
+version = "1.0.3"
 
 // REPOSITORIES AND DEPENDENCIES
 repositories {
@@ -46,7 +46,7 @@ publishing {
             project.properties["repoUrl"]?.let { url = uri(it) }
 
             credentials {
-                project.properties["userName"]?.let { username = it.toString() }
+                username = "." // Doesn't have to be a real user name
                 project.properties["token"]?.let { password = it.toString() }
             }
         }
