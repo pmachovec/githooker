@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "com.pmachovec"
-version = "1.0.3"
+version = "1.0.4"
 
 // REPOSITORIES AND DEPENDENCIES
 repositories {
@@ -62,7 +62,6 @@ idea {
 }
 
 ktlint {
-    disabledRules.add("import-ordering")
     verbose.set(true)
 }
 

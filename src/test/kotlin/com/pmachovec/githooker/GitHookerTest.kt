@@ -2,14 +2,10 @@ package com.pmachovec.githooker
 
 import com.pmachovec.githooker.constants.tasks.SetGitHooksTask
 import com.pmachovec.githooker.extensions.GitHookerExtension
-
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.powermock.modules.testng.PowerMockTestCase
-import org.testng.Assert.assertEquals
-import org.testng.Assert.assertNotNull
-import org.testng.Assert.assertNull
-import org.testng.Assert.assertTrue
+import org.testng.Assert.* // ktlint-disable
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 

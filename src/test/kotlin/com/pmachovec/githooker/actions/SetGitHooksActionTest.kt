@@ -5,13 +5,11 @@ import com.pmachovec.githooker.constants.DefaultValues
 import com.pmachovec.githooker.constants.Texts
 import com.pmachovec.githooker.constants.tasks.SetGitHooksTask
 import com.pmachovec.githooker.extensions.GitHookerExtension
-
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
-
 import org.apache.commons.exec.CommandLine
-import org.apache.commons.exec.ExecuteException
 import org.apache.commons.exec.DefaultExecutor
+import org.apache.commons.exec.ExecuteException
 import org.apache.commons.exec.PumpStreamHandler
 import org.gradle.api.Action
 import org.gradle.api.Task
@@ -22,9 +20,7 @@ import org.mockito.Mockito
 import org.powermock.api.mockito.PowerMockito
 import org.powermock.core.classloader.annotations.PrepareForTest
 import org.powermock.modules.testng.PowerMockTestCase
-import org.testng.Assert.assertEquals
-import org.testng.Assert.assertNotEquals
-import org.testng.Assert.assertNotNull
+import org.testng.Assert.* // ktlint-disable
 import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.BeforeMethod
