@@ -3,10 +3,8 @@ package com.pmachovec.githooker.actions
 import com.pmachovec.githooker.constants.DefaultValues
 import com.pmachovec.githooker.constants.Texts
 import com.pmachovec.githooker.extensions.GitHookerExtension
-
 import java.io.ByteArrayOutputStream
 import javax.inject.Inject
-
 import org.apache.commons.exec.CommandLine
 import org.apache.commons.exec.DefaultExecutor
 import org.apache.commons.exec.ExecuteException

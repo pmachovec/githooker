@@ -2,7 +2,6 @@ package com.pmachovec.githooker.listeners
 
 import com.pmachovec.githooker.constants.tasks.SetGitHooksTask
 import com.pmachovec.githooker.extensions.GitHookerExtension
-
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.Task

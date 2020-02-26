@@ -62,7 +62,6 @@ idea {
 }
 
 ktlint {
-    disabledRules.add("import-ordering")
     verbose.set(true)
 }
 
