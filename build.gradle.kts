@@ -5,13 +5,12 @@ plugins {
     idea
     `java-gradle-plugin`
     `maven-publish`
-    kotlin("jvm").version("1.3.60")
+    kotlin("jvm").version("1.4.30")
     id("org.jlleitschuh.gradle.ktlint").version("9.0.0")
-    id("com.pmachovec.ultrabuilder").version("1.1.1")
 }
 
 group = "com.pmachovec"
-version = "1.0.4"
+version = "1.1"
 
 // REPOSITORIES AND DEPENDENCIES
 repositories {
@@ -65,27 +64,16 @@ ktlint {
     verbose.set(true)
 }
 
+tasks.compileJava {
+    targetCompatibility = JavaVersion.VERSION_1_8.toString()
+}
+
 tasks.compileTestKotlin {
     kotlinOptions.suppressWarnings = true
 }
 
-// The 'jar' task creates a fat jar without Gradle API, project binaries are NOT skipped
-tasks.jar {
-    from({
-        configurations.runtimeClasspath.get().filter {
-            it.name.contains("commons-exec")
-            /*
-             * Using 'it.name.endswith("jar")' would create an enormous jar with the whole Gradle API,
-             * which makes no sense for a Gradle plugin.
-             */
-        }.map {
-            zipTree(it)
-        }
-    })
-}
-
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = JavaVersion.VERSION_12.toString()
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
 }
 
 tasks.withType<Test> {
